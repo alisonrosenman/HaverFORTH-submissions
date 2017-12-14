@@ -1,12 +1,126 @@
 // See the following on using objects as key/value dictionaries
 // https://stackoverflow.com/questions/1208222/how-to-do-associative-array-hashing-in-javascript
-var words = {};
+//TASK 4:
+var words = {
+    "+":"addition",
+    "-":"subtraction",
+    "*":"multiplication",
+    "dup":"duplicate",
+    "nip":"nip",
+    "swap":"swap",
+    "over":"over",
+    ">":"greaterthan",
+    "=":"equality",
+    "<":"lessthan,"
+};
 
+//Used with TASK 6:
+var userDefined = {};
+
+//TASK 8: DISCUSSION FOR LAB 7
 /** 
- * Your thoughtful comment here.
- */
-function emptyStack(stack) {
-    // ...
+ * Your thoughtful comment here:
+    Redoing this lab in JavaScript gave me a new perspective on many of the concepts we've been talking about in class this whole semester. 
+    This lab ws a lot easier for me because I have used JavaScript before, so when it came to working with concepts like mapping and passing (by reference in JS), 
+    it was much more second-nature  than I realized. So, this makes me look back on my C++/HERA labs and feel like I knew more than I thought I did! Also,
+    I now have more insight into the benefits and drawbacks of each language.
+
+    Lack of types in javascript became an issue primarily when working with the user-defined functions. While debugging, I found myself often
+    console.log-ing some variable using the typeof keyword to get its type. This helped me fix errors with how I stored and accessed my 
+    user-defined functions, since it is important to know that they came in as a long list, were separated into arrays, then stored as individiual
+    strings again!
+
+    The lack of types did not surprise or hurt me significantly. In general, I find JavaScript to be INCREDIBLY easier than C++, and maybe that's because every object doesn't have to have a type. 
+    Instead, I found the "typing" JavaScript DOES have (I don't think this counts as actual typing ) where one has to declare variables with "var" and functions with "function" was just organizationally 
+    helpful, and makes javaScript code easier to read, write, and debug.
+
+    It was interesting to think of mapping in JavaScript. Although I have used forEach many times before, I didn't really put it together that that could
+    be seen as a sort of "mapping" in this lab (and the related python for ------ in -----). This is one thing that makes C++ / CS245 seem easier,
+    looking back. I also found dynamic typing to be helpful—not having type-checking at compile-time made completing this lab happen a lot faster
+    for me, as I could work on other elements then go back to places where I was stuck without receiving all of the red ink I would have
+    been given in Eclipse/C++. I'm looking forward to creating my own prototypes and objects as part of the final lab, though I've done this before.
+
+
+
+
+
+  */
+
+ //TASK 1:
+function emptyStack(astack) {
+    console.log(astack.length);
+    while (astack.length > 0){
+        astack.pop();
+        console.log("poppop");
+    }
+   renderStack(astack);
+}
+
+//TASK 3:
+function addition(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    stack.push(first+second);
+}
+
+function subtraction(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    stack.push(first-second);
+}
+
+function multiplication(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    stack.push(first*second);
+}
+
+function duplicate(stack){
+    var first = stack.pop();
+    stack.push(first);
+    stack.push(first);
+}
+
+function nip(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    stack.push(second);
+}
+
+function swap(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    stack.push(first);
+    stack.push(second);
+}
+
+function over(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    stack.push(first);
+    stack.push(second);
+    stack.push(first);
+}
+
+function greaterthan(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    if (first > second){ stack.push(0);}
+    else {stack.push(-1);}
+}
+
+function equality(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    if (first == second){ stack.push(-1);}
+    else {stack.push(0);}
+}
+
+function lessthan(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    if (first < second){ stack.push(0);}
+    else {stack.push(-1);}
 }
 
 /**
@@ -26,8 +140,10 @@ function print(terminal, msg) {
  * @param {Array[Number]} The stack to render
  */
 function renderStack(stack) {
+    console.log("The stack is: " + stack);
+  //  console.log(stack.slice());
     $("#thestack").empty();
-    stack.slice().reverse().forEach(function(element) {
+     stack.slice().reverse().forEach(function(element) {
         $("#thestack").append("<tr><td>" + element + "</td></tr>");
     });
 };
@@ -39,22 +155,129 @@ function renderStack(stack) {
  * @param {string} input - The string the user typed
  * @param {Terminal} terminal - The terminal object
  */
+
+ //The point of this is to solve the problem of giving a user-defined word which contains a user-defined word which contains a user-defined word which contains a user-defined word etc., etc.,
+ function processUserDefined(string, stack, terminal){ //Used with TASK 6
+    var value = userDefined[string];
+    var sublist = value.trim().split(/ +/);
+    sublist.forEach(function(thing){
+     if (!(isNaN(parseInt(thing)))){
+                print(terminal, "pushing "+ Number(thing));
+                stack.push(Number(thing));
+            } else if( thing === ".s"){
+                print(terminal, " <"+ stack.length + "> " +stack.slice().join(" "))
+            }
+            else if (thing in words){
+                var the_op = words[thing];
+                eval(the_op)(stack);
+            }
+            else if (thing in userDefined){
+                processUserDefined(thing);
+            }
+    })
+
+ }
 function process(stack, input, terminal) {
-    // The user typed a number
-    if (!(isNaN(Number(input)))) {
-        print(terminal,"pushing " + Number(input));
-        stack.push(Number(input));
-    } else if (input === ".s") {
-        print(terminal, " <" + stack.length + "> " + stack.slice().join(" "));
-    } else if (input === "+") {
-        var first = stack.pop();
-        var second = stack.pop();
-        stack.push(first+second);
-    } else {
-        print(terminal, ":-( Unrecognized input");
+    var listOfThingsToDo = input.trim().split(/ +/); //Each word of an input becomes an element of array listOfThingsToDo
+    console.log("the list of things to do is: "+listOfThingsToDo);
+    if(listOfThingsToDo.indexOf(":") == -1){ //If we aren't in function-definition mode:
+    listOfThingsToDo.forEach(function(element){ //TASK 5:
+        // The user typed a number
+   // if (!(isNaN(Number(element)))) {
+    if (!(isNaN(parseInt(element)))){
+        print(terminal,"pushing " + Number(element));
+        stack.push(Number(element));
+         console.log("stack size should be: "+stack.length);
+    
+    // The user types .s
+    } else if (element === ".s") {
+        print(terminal, " <" + stack.length + "> " + stack.join(" "));
+        console.log("<"+stack.length+">");
+    } 
+    // The user types a "standard" FORTH operation: dup, nip, >, etc.
+    else if (element in words){
+        if (stack.length > 1 || element == "dup"){
+        console.log("start");
+        var the_op = words[element];
+        eval(the_op)(stack);
     }
+        else{
+            print(terminal, "ERROR: need more numbers on stack to perform this operation!");
+        }
+        //fn.apply(null, stack);
+        
+        console.log("end");
+        //eval(words[input])(stack);
+        //stack = words[input](stack);
+    }
+
+    else if (element in userDefined){ //TASK 6
+        var value = userDefined[element];
+        var sublist = value.trim().split(/ +/);
+        sublist.forEach(function(thing){
+            if (!(isNaN(parseInt(thing)))){
+                print(terminal, "pushing "+ Number(thing));
+                stack.push(Number(thing));
+            } else if( thing === ".s"){
+                print(terminal, " <"+ stack.length + "> " +stack.join(" "))
+            }
+            else if (thing in words){
+                if (stack.length > 1 || thing == "dup"){
+                var the_op = words[thing];
+                eval(the_op)(stack); //Generally, eval is "evil". However, since I am providing parameters for eval within my function (must be in my map) this doesn't pose a security risk (i think???). https://javascriptweblog.wordpress.com/2010/04/19/how-evil-is-eval/ backs me up. Also, frankly, it works!
+               } else{
+                    print(terminal, "ERROR: need more numbers on stack to perform this operation");
+                }
+            }
+            else if (thing in userDefined){
+                processUserDefined(thing, stack, terminal);
+            }
+
+        })}
+        //eval(words[value])(stack);
+       // listOfThingsToDo.pop();
+        //listOfThingsToDo = listOfThingsToDo.push(value);
+        //console.log("new stuff should be here: "+listOfThingsToDo);
+    })
+}
+    //Do all of the above if there isn't a : on the line.
+    //Otherwise, do the below, which just puts into a map. Then. you're ready for more to come later....
+/*
+    else if (element in userDefined){ //if we're dealing with a user-defined function
+        var definedOperations = userDefined[element].trim().split(/ +/);
+        definedOperations.forEach(function(definedElement){
+            process(stack, definedElement, terminal);
+        })
+    }
+    else if(listOfThingsToDo.indexOf(element)>listOfThingsToDo.indexOf(":") && listOfThingsToDo.indexOf(element)<=listOfThingsToDo.indexOf(";")){
+        console.log("withinfunctionbody");
+        listOfThingsToDo.splice(listOfThingsToDo.indexOf(element), 1);
+    
+*/
+  //  else if (element == ":"){
+        else if (!(listOfThingsToDo.indexOf(":") == -1)){
+        // then, until you hit semicolon, put in function body
+        var indexOfColon = listOfThingsToDo.indexOf(":");
+        var indexOfSemi = listOfThingsToDo.indexOf(";");
+        var indexOfAfterName = listOfThingsToDo.indexOf(":")+2;
+        var functionName =listOfThingsToDo[indexOfColon+1]; //ASSUMING SPACE BETWEEN EACH WORD, INCLUDING COLON/
+        console.log("UD function name is: "+ functionName);
+        var functionBody = listOfThingsToDo.slice(indexOfAfterName, indexOfSemi).join(" ");
+        // element += functionBody.length;
+        
+        userDefined[functionName] = functionBody;
+        console.log("here it is in the map: "+userDefined);
+         var $something= $('<input/>').attr({ type: 'button', name:functionName, value:functionName});//, on:("click", function(){process(stack, this.value, terminal); console.log("clicked"))}});
+         $something.on("click", function(){process(stack, this.value, terminal)});
+         $("#UserDefinedButtons").append($something);
+                
+        }
+        else {
+        print(terminal, ":-( Unrecognized input");
+        }
+//})
     renderStack(stack);
-};
+}; //close of Process function
 
 function runRepl(terminal, stack) {
     terminal.input("Type a forth command:", function(line) {
@@ -64,9 +287,11 @@ function runRepl(terminal, stack) {
     });
 };
 
+// var stack = []; 
 // Whenever the page is finished loading, call this function. 
 // See: https://learn.jquery.com/using-jquery-core/document-ready/
 $(document).ready(function() {
+
     var terminal = new Terminal();
     terminal.setHeight("400px");
     terminal.blinkingCursor(true);
@@ -77,8 +302,18 @@ $(document).ready(function() {
 
     var stack = [];
 
+    //TASK 2:
+    $("#reset").click(function(){
+        emptyStack(stack);
+        console.log("just emptied");
+    });
+    $(':button').click(function(){console.log("i tried");})//process(stack, this.name, terminal)})
+
+
+
     print(terminal, "Welcome to HaverForth! v0.1");
     print(terminal, "As you type, the stack (on the right) will be kept in sync");
+    runRepl(terminal, stack); ///
 
-    runRepl(terminal, stack);
+   
 });
