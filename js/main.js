@@ -51,9 +51,12 @@ key:function(stacky, terminal)(return function(add(stacky)))
  //TASK 1:
 function emptyStack(astack) {
     console.log(astack.length);
-    while (astack.length > 0){
-        astack.pop();
-        console.log("poppop");
+ //   while (astack.length > 0){
+ //       astack.pop();
+ //       console.log("poppop");
+ //   }
+    while (astack.stack_repr.length > 0){
+        astack.stack_repr.pop();
     }
    renderStack(astack);
 }
@@ -172,7 +175,7 @@ function renderStack(stack) {
             }
             else if (thing in words){
                 var the_op = words[thing];
-                eval(the_op)(stack);
+                eval(the_op)(stack); //Generally, eval is "evil". However, since I am providing parameters for eval within my function (must be in my map) this doesn't pose a security risk (i think???). https://javascriptweblog.wordpress.com/2010/04/19/how-evil-is-eval/ backs me up. Also, frankly, it works!
             }
             else if (thing in userDefined){
                 processUserDefined(thing);
@@ -203,7 +206,7 @@ function process(stack, input, terminal) {
           if (stack.stack_repr.length > 1 || element == "dup"){
         console.log("start");
         var the_op = words[element];
-        eval(the_op)(stack);
+        eval(the_op)(stack); //Generally, eval is "evil". However, since I am providing parameters for eval within my function (must be in my map) this doesn't pose a security risk (i think???). https://javascriptweblog.wordpress.com/2010/04/19/how-evil-is-eval/ backs me up. Also, frankly, it works!
     }
         else{
             print(terminal, "ERROR: need more numbers on stack to perform this operation!");
@@ -347,4 +350,6 @@ var Stack = class Stack {
  //test.stack_push(5);
  //console.log("here we go; " + test.pop);
  
+   
+
    
