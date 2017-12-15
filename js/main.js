@@ -200,20 +200,21 @@ function process(stack, input, terminal) {
     
     // The user types .s
     } else if (element === ".s") {
-        print(terminal, " <" + stack.length + "> " + stack.join(" "));
+       // print(terminal, " <" + stack.length + "> " + stack.join(" "));
+            print(terminal, " <" + stack.stack_repr.length + "> "+stack.stack_repr.slice().join(" "))
         console.log("<"+stack.length+">");
     } 
     // The user types a "standard" FORTH operation: dup, nip, >, etc.
     else if (element in words){
        // if (stack.length > 1 || element == "dup"){
-         // if (stack.stack_repr.length > 1 || element == "dup"){
+          if (stack.stack_repr.length > 1 || element == "dup"){
         console.log("start");
         var the_op = words[element];
         eval(the_op)(stack); //Generally, eval is "evil". However, since I am providing parameters for eval within my function (must be in my map) this doesn't pose a security risk (i think???). https://javascriptweblog.wordpress.com/2010/04/19/how-evil-is-eval/ backs me up. Also, frankly, it works!
-   // }
-  //      else{
-    //        print(terminal, "ERROR: need more numbers on stack to perform this operation!");
-     //   }
+    }
+        else{
+            print(terminal, "ERROR: need more numbers on stack to perform this operation!");
+        }
         //fn.apply(null, stack);
         
         console.log("end");
@@ -229,7 +230,8 @@ function process(stack, input, terminal) {
                 print(terminal, "pushing "+ Number(thing));
                 stack.push(Number(thing));
             } else if( thing === ".s"){
-                print(terminal, " <"+ stack.length + "> " +stack.join(" "))
+                //print(terminal, " <"+ stack.length + "> " +stack.join(" "))
+                print(terminal, " <" + stack.stack_repr.length + "> "+stack.stack_repr.slice().join(" "))
             }
             else if (thing in words){
                 if (stack.stack_repr.length > 1 || thing == "dup"){
@@ -311,7 +313,7 @@ $(document).ready(function() {
     $("#terminal").append(terminal.html);
 
     //var stack = [];
-    var stack = new Stack;
+    var stack = new Stack; //hereee we goooooooooooo
 
     //TASK 2:
     $("#reset").click(function(){
@@ -353,8 +355,4 @@ var Stack = class Stack {
  //test.stack_push(5);
  //console.log("here we go; " + test.pop);
  
-   
-
-   
-
    
