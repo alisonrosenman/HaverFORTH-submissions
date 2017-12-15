@@ -1,8 +1,8 @@
-// See the following on using objects as key/value dictionaries
+ // See the following on using objects as key/value dictionaries
 // https://stackoverflow.com/questions/1208222/how-to-do-associative-array-hashing-in-javascript
 //TASK 4:
 var words = {
-    "+":"addition",
+    "+":"addition", //function(add(x))
     "-":"subtraction",
     "*":"multiplication",
     "dup":"duplicate",
@@ -42,8 +42,10 @@ var userDefined = {};
 
 
 
+key:function(stack(){add(stack)}
+key:function(stacky, terminal)(return function(add(stacky)))
 
-
+... var stack = [];
   */
 
  //TASK 1:
@@ -143,7 +145,8 @@ function renderStack(stack) {
     console.log("The stack is: " + stack);
   //  console.log(stack.slice());
     $("#thestack").empty();
-     stack.slice().reverse().forEach(function(element) {
+    //stack.slice().reverse().forEach(function(element) {
+     stack.stack_repr.slice().reverse().forEach(function(element) {
         $("#thestack").append("<tr><td>" + element + "</td></tr>");
     });
 };
@@ -196,7 +199,8 @@ function process(stack, input, terminal) {
     } 
     // The user types a "standard" FORTH operation: dup, nip, >, etc.
     else if (element in words){
-        if (stack.length > 1 || element == "dup"){
+       // if (stack.length > 1 || element == "dup"){
+          if (stack.stack_repr.length > 1 || element == "dup"){
         console.log("start");
         var the_op = words[element];
         eval(the_op)(stack);
@@ -300,7 +304,8 @@ $(document).ready(function() {
     // represents the terminal to the end of it.
     $("#terminal").append(terminal.html);
 
-    var stack = [];
+    //var stack = [];
+    var stack = new Stack;
 
     //TASK 2:
     $("#reset").click(function(){
@@ -317,3 +322,29 @@ $(document).ready(function() {
 
    
 });
+
+//My Constructor:
+
+var Stack = class Stack {
+    constructor(){
+        this.stack_repr =  [];
+    }
+   get represenation(){
+        return this.stack_repr;
+    }
+
+    pop(){
+        return this.stack_repr.pop();
+    }
+
+    push(x){
+        return this.stack_repr.push(x)
+    }
+}
+
+// var test = new Stack();
+ //console.log(test);
+ //test.stack_push(5);
+ //console.log("here we go; " + test.pop);
+ 
+   
