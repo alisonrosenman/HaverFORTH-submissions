@@ -6,6 +6,7 @@ var words = {
     "+":"addition", 
     "-":"subtraction",
     "*":"multiplication",
+    "/":"division",
     "dup":"duplicate",
     "nip":"nip",
     "swap":"swap",
@@ -79,6 +80,12 @@ function multiplication(stack){
     var first = stack.pop();
     var second = stack.pop();
     stack.push(first*second);
+}
+
+function division(stack){
+    var first = stack.pop();
+    var second = stack.pop();
+    stack.push(first/second);
 }
 
 function duplicate(stack){
@@ -313,7 +320,8 @@ $(document).ready(function() {
     $("#terminal").append(terminal.html);
 
     //var stack = [];
-    var stack = new Stack; //hereee we goooooooooooo
+    //var stack = new Stack; //hereee we goooooooooooo
+    var stack = new ObservableStack;
 
     //TASK 2:
     $("#reset").click(function(){
@@ -333,26 +341,42 @@ $(document).ready(function() {
 
 //My Constructor:
 
-var Stack = class Stack {
+//var Stack = class Stack {
+class Stack{
     constructor(){
         this.stack_repr =  [];
     }
    get represenation(){
         return this.stack_repr;
     }
-
     pop(){
         return this.stack_repr.pop();
     }
-
     push(x){
         return this.stack_repr.push(x)
     }
 }
 
+class ObservableStack extends Stack{
+    constructor(){
+        super();
+        this.info = "This is an ObservableStack";
+        this.observers = []; //Eventually, we will have a list of observers which go here.
+    }
+
+    registerObserver(observer){  // register a function which calls renderStack for each change to the stack so that you don't have to continually call it.
+        this.handlers.push(observer); //Add the observer to the list of observers.
+    }
+
+}
 // var test = new Stack();
  //console.log(test);
  //test.stack_push(5);
  //console.log("here we go; " + test.pop);
+ var test = new ObservableStack();
+ //console.log("here we gp: "+ test.info);
+//console.log(test.push(8));
  
+   
+
    
