@@ -60,7 +60,7 @@ function emptyStack(astack) {
     while (astack.stack_repr.length > 0){
         astack.stack_repr.pop();
     }
-   renderStack(astack);
+ renderStack(astack);
 }
 
 //TASK 3:
@@ -86,7 +86,7 @@ function division(stack){
     var first = stack.pop();
     var second = stack.pop();
     stack.push(first/second);
-}
+    }
 
 function duplicate(stack){
     var first = stack.pop();
@@ -148,12 +148,13 @@ function print(terminal, msg) {
     $("#terminal").scrollTop($('#terminal')[0].scrollHeight + 40);
 }
 
+
 /** 
  * Sync up the HTML with the stack in memory
  * @param {Array[Number]} The stack to render
  */
 function renderStack(stack) {
-    console.log("The stack is: " + stack);
+    //console.log("The stack is: " + stack.stack_repr);
   //  console.log(stack.slice());
     $("#thestack").empty();
     //stack.slice().reverse().forEach(function(element) {
@@ -253,27 +254,9 @@ function process(stack, input, terminal) {
             }
 
         })}
-        //eval(words[value])(stack);
-       // listOfThingsToDo.pop();
-        //listOfThingsToDo = listOfThingsToDo.push(value);
-        //console.log("new stuff should be here: "+listOfThingsToDo);
-    })
+       
+    }) //End of NON definition mode
 }
-    //Do all of the above if there isn't a : on the line.
-    //Otherwise, do the below, which just puts into a map. Then. you're ready for more to come later....
-/*
-    else if (element in userDefined){ //if we're dealing with a user-defined function
-        var definedOperations = userDefined[element].trim().split(/ +/);
-        definedOperations.forEach(function(definedElement){
-            process(stack, definedElement, terminal);
-        })
-    }
-    else if(listOfThingsToDo.indexOf(element)>listOfThingsToDo.indexOf(":") && listOfThingsToDo.indexOf(element)<=listOfThingsToDo.indexOf(";")){
-        console.log("withinfunctionbody");
-        listOfThingsToDo.splice(listOfThingsToDo.indexOf(element), 1);
-    
-*/
-  //  else if (element == ":"){
         else if (!(listOfThingsToDo.indexOf(":") == -1)){
         // then, until you hit semicolon, put in function body
         var indexOfColon = listOfThingsToDo.indexOf(":");
@@ -294,8 +277,8 @@ function process(stack, input, terminal) {
         else {
         print(terminal, ":-( Unrecognized input");
         }
-//})
-    renderStack(stack);
+    //renderStack(stack);
+    stack.isChange();
 }; //close of Process function
 
 function runRepl(terminal, stack) {
@@ -328,7 +311,7 @@ $(document).ready(function() {
         emptyStack(stack);
         console.log("just emptied");
     });
-    $(':button').click(function(){console.log("i tried");})//process(stack, this.name, terminal)})
+  //  $(':button').click(function(){console.log("i tried");})//process(stack, this.name, terminal)})
 
 
 
@@ -357,6 +340,17 @@ class Stack{
     }
 }
 
+//Subject:
+//Observer:
+//ConcreteSubject:
+//ConcreteObserver
+function callEachObs(stack){
+    stack.observers.forEach(function(obs){
+        obs(stack);
+        
+    })
+}
+
 class ObservableStack extends Stack{
     constructor(){
         super();
@@ -365,18 +359,31 @@ class ObservableStack extends Stack{
     }
 
     registerObserver(observer){  // register a function which calls renderStack for each change to the stack so that you don't have to continually call it.
-        this.handlers.push(observer); //Add the observer to the list of observers.
+        this.observers.push(observer); //Add the observer to the list of observers.
+        this.notify();
+        
+    }
+    isChange(){
+        var rowCount = $('#thestack tr').length;
+        if (rowCount != this.stack_repr.length || this.stack_repr.length == 1){ //there should be as many rows in the HTML <table> as there are items in this.stack_repr
+            this.registerObserver(renderStack);
+           // renderStack(this);
+            //console.log("will need to call render stack");
+        }
+    }
+    notify(){
+        //On keyup, 
+        callEachObs(this);
+        }
     }
 
-}
-// var test = new Stack();
- //console.log(test);
- //test.stack_push(5);
- //console.log("here we go; " + test.pop);
- var test = new ObservableStack();
- //console.log("here we gp: "+ test.info);
-//console.log(test.push(8));
- 
-   
 
-   
+ var test = new ObservableStack();
+ //window.addEventListener("keydown", )
+//test.registerObserver(isChange);
+//test.notify;
+
+
+//console.log("observers are: " + test.observers);
+
+
