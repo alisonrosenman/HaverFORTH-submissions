@@ -108,7 +108,7 @@ function swap(stack){
 
 function over(stack){
     var first = stack.stack_repr.pop();
-    var second = stack.pop();
+    var second = stack.stack_repr.pop();
     stack.push(first);
     stack.push(second);
     stack.push(first);
