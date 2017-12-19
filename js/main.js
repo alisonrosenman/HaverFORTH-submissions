@@ -58,9 +58,8 @@ function emptyStack(astack) {
  //       console.log("poppop");
  //   }
     while (astack.stack_repr.length > 0){
-        astack.stack_repr.pop();
+        astack.pop();
     }
- renderStack(astack);
 }
 
 //TASK 3:
@@ -278,7 +277,7 @@ function process(stack, input, terminal) {
         print(terminal, ":-( Unrecognized input");
         }
     //renderStack(stack);
-    stack.isChange();
+   // stack.isChange();
 }; //close of Process function
 
 function runRepl(terminal, stack) {
@@ -305,6 +304,7 @@ $(document).ready(function() {
     //var stack = [];
     //var stack = new Stack; //hereee we goooooooooooo
     var stack = new ObservableStack;
+
 
     //TASK 2:
     $("#reset").click(function(){
@@ -336,7 +336,9 @@ class Stack{
         return this.stack_repr.pop();
     }
     push(x){
-        return this.stack_repr.push(x)
+       return this.stack_repr.push(x)
+       
+
     }
 }
 
@@ -360,21 +362,22 @@ class ObservableStack extends Stack{
 
     registerObserver(observer){  // register a function which calls renderStack for each change to the stack so that you don't have to continually call it.
         this.observers.push(observer); //Add the observer to the list of observers.
-        this.notify();
+       // this.notify();
         
-    }
-    isChange(){
-        var rowCount = $('#thestack tr').length;
-        if (rowCount != this.stack_repr.length || this.stack_repr.length == 1){ //there should be as many rows in the HTML <table> as there are items in this.stack_repr
-            this.registerObserver(renderStack);
-           // renderStack(this);
-            //console.log("will need to call render stack");
-        }
     }
     notify(){
         //On keyup, 
-        callEachObs(this);
+        this.observers.push(renderStack);
+        callEachObs(this); //do this function in here
         }
+    push(x){
+        this.stack_repr.push(x);
+        this.notify();
+    }
+    pop(){
+        this.stack_repr.pop();
+        this.notify();
+    }
     }
 
 
@@ -385,5 +388,4 @@ class ObservableStack extends Stack{
 
 
 //console.log("observers are: " + test.observers);
-
 
