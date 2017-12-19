@@ -64,50 +64,50 @@ function emptyStack(astack) {
 
 //TASK 3:
 function addition(stack){
-    var first = stack.pop();
-    var second = stack.pop();
+    var first = stack.stack_repr.pop();
+    var second = stack.stack_repr.pop();
     stack.push(first+second);
 }
 
 function subtraction(stack){
-    var first = stack.pop();
-    var second = stack.pop();
+    var first = stack.stack_repr.pop();
+    var second = stack.stack_repr.pop();
     stack.push(first-second);
 }
 
 function multiplication(stack){
-    var first = stack.pop();
-    var second = stack.pop();
+    var first = stack.stack_repr.pop();
+    var second = stack.stack_repr.pop();
     stack.push(first*second);
 }
 
 function division(stack){
-    var first = stack.pop();
-    var second = stack.pop();
+    var first = stack.stack_repr.pop();
+    var second = stack.stack_repr.pop();
     stack.push(first/second);
     }
 
 function duplicate(stack){
-    var first = stack.pop();
+    var first = stack.stack_repr.pop();
     stack.push(first);
     stack.push(first);
 }
 
 function nip(stack){
-    var first = stack.pop();
-    var second = stack.pop();
+    var first = stack.stack_repr.pop();
+    var second = stack.stack_repr.pop();
     stack.push(second);
 }
 
 function swap(stack){
-    var first = stack.pop();
-    var second = stack.pop();
+    var first = stack.stack_repr.pop();
+    var second = stack.stack_repr.pop();
     stack.push(first);
     stack.push(second);
 }
 
 function over(stack){
-    var first = stack.pop();
+    var first = stack.stack_repr.pop();
     var second = stack.pop();
     stack.push(first);
     stack.push(second);
@@ -115,22 +115,22 @@ function over(stack){
 }
 
 function greaterthan(stack){
-    var first = stack.pop();
-    var second = stack.pop();
+    var first = stack.stack_repr.pop();
+    var second = stack.stack_repr.pop();
     if (first > second){ stack.push(0);}
     else {stack.push(-1);}
 }
 
 function equality(stack){
-    var first = stack.pop();
-    var second = stack.pop();
+    var first = stack.stack_repr.pop();
+    var second = stack.stack_repr.pop();
     if (first == second){ stack.push(-1);}
     else {stack.push(0);}
 }
 
 function lessthan(stack){
-    var first = stack.pop();
-    var second = stack.pop();
+    var first = stack.stack_repr.pop();
+    var second = stack.stack_repr.pop();
     if (first < second){ stack.push(0);}
     else {stack.push(-1);}
 }
@@ -388,4 +388,3 @@ class ObservableStack extends Stack{
 
 
 //console.log("observers are: " + test.observers);
-
