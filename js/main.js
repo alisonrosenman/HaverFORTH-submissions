@@ -192,6 +192,11 @@ function renderStack(stack) {
     })
 
  }
+
+ //d3 Here...
+       var svgContainer = d3.select("body").append("svg")
+                                    .attr("width", 250)
+                                    .attr("height", 200);
 function process(stack, input, terminal) {
     var listOfThingsToDo= input.trim().split(/ +/); //Each word of an input becomes an element of array listOfThingsToDo
     //var listOfThingsToDo = listOfThingsToDoPlusSemiColon.slice(0, listOfThingsToDoPlusSemiColon.length-1)
@@ -253,8 +258,25 @@ function process(stack, input, terminal) {
             }
 
         })}
+        else if (element == "circle"){
+
+        var TheRadius = stack.stack_repr.pop();
+        var yCoordinate = stack.stack_repr.pop();
+        var xCoordinate= stack.stack_repr.pop();
+        var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
+        var randomIndex = Math.floor((Math.random() * colors.length) + 1);
+
+        var circle = svgContainer.append("circle")
+                          .attr("cx", 20+xCoordinate)
+                          .attr("cy", 40+yCoordinate)
+                          .attr("r", TheRadius)
+                          .style("fill", colors[randomIndex]);
+        
+        console.log("shoulddraw!");
+    }
        
     }) //End of NON definition mode
+   // }
 }
         else if (!(listOfThingsToDo.indexOf(":") == -1)){
         // then, until you hit semicolon, put in function body
@@ -271,14 +293,30 @@ function process(stack, input, terminal) {
          var $something= $('<input/>').attr({ type: 'button', name:functionName, value:functionName});//, on:("click", function(){process(stack, this.value, terminal); console.log("clicked"))}});
          $something.on("click", function(){process(stack, this.value, terminal)});
          $("#UserDefinedButtons").append($something);
-                
+
         }
+
         else {
         print(terminal, ":-( Unrecognized input");
         }
     //renderStack(stack);
    // stack.isChange();
 }; //close of Process function
+
+function draw(a, b, radius) {
+        var canvas = document.getElementById('tutorial');
+        var ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        var x = a; //25 + j * 50; // x coordinate
+        var y = b; // 25 + i * 50; // y coordinate
+      //  var radius = 20; // Arc radius
+        var startAngle = 0; // Starting point on circle
+        var endAngle = 2*Math.PI; // End point on circle
+      //  var anticlockwise = i % 2 !== 0; // clockwise or anticlockwise
+        ctx.arc(x, y, radius, startAngle, endAngle);//, anticlockwise);
+        ctx.fill();
+        console.log('drawn');
+    }
 
 function runRepl(terminal, stack) {
     terminal.input("Type a forth command:", function(line) {
@@ -352,33 +390,6 @@ function callEachObs(stack){
         
     })
 }
-function draw(a, b) {
-        var canvas = document.getElementById('tutorial');
-        if (canvas.getContext) {
-          var ctx = canvas.getContext('2d');
-        }
-
-       for (var i = 0; i < 4; i++) {
-      for (var j = 0; j < 3; j++) {
-        ctx.beginPath();
-        var x = a; //25 + j * 50; // x coordinate
-        var y = b; // 25 + i * 50; // y coordinate
-        var radius = 20; // Arc radius
-        var startAngle = 0; // Starting point on circle
-        var endAngle = Math.PI + (Math.PI * j) / 2; // End point on circle
-        var anticlockwise = i % 2 !== 0; // clockwise or anticlockwise
-
-        ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
-
-        if (i > 1) {
-          ctx.fill();
-        } else {
-          ctx.stroke();
-        }
-      }
-    }
-  }
-      
 
 class ObservableStack extends Stack{
     constructor(){
