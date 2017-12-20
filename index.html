@@ -4,6 +4,7 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
     <head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title></title>
@@ -30,7 +31,9 @@
       canvas { border: 1px solid black; margin-top: relative;}
     </style>        
     </head>
-    <body onload = "draw(50, 50)">
+   <!-- <body onload = "draw(50, 50, 2)">-->
+  <!-- <body onkeypress="draw(60, 60, 20)">-->
+ <body>
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -55,7 +58,9 @@
           <h2>Forth Console</h2>
           <!-- The terminal will get put here -->
           <div id="terminal"></div>
-             <div>     <canvas id="tutorial" width="150" height="150"></canvas> </div>
+          <div>
+           <!--  <div>     <canvas id="tutorial" width="150" height="150"></canvas> </div>-->
+             </div>
 
           <a class="btn btn-danger" href="#" role="button" id="reset">Reset</a>
           <h4>User defined functions:</h4>
