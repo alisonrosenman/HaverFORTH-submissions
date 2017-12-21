@@ -40,28 +40,19 @@ var userDefined = {};
     looking back. I also found dynamic typing to be helpful—not having type-checking at compile-time made completing this lab happen a lot faster
     for me, as I could work on other elements then go back to places where I was stuck without receiving all of the red ink I would have
     been given in Eclipse/C++. I'm looking forward to creating my own prototypes and objects as part of the final lab, though I've done this before.
-
-
-
-key:function(stack(){add(stack)}
-key:function(stacky, terminal)(return function(add(stacky)))
-
-... var stack = [];
   */
 
  //TASK 1:
 function emptyStack(astack) {
     console.log(astack.length);
- //   while (astack.length > 0){
- //       astack.pop();
- //       console.log("poppop");
- //   }
     while (astack.stack_repr.length > 0){
         astack.pop();
     }
 }
 
 //TASK 3:
+//For these functions, I use stack.stack_repr.pop() to get variables to +*-/ because I don't want to renderStack just yet.
+//BUt once I'm able to calculate the thing I want on the stack, I use a stack.push() which will then render the completed stack.
 function addition(stack){
     var first = stack.stack_repr.pop();
     var second = stack.stack_repr.pop();
@@ -168,6 +159,14 @@ function renderStack(stack) {
  * @param {string} input - The string the user typed
  * @param {Terminal} terminal - The terminal object
  */
+
+
+ //d3 Here... I decided to use d3 for the final part of this lab because it allows me to easily create SVG elements with many characteristics. Hooking it all up to the forth interpreter is the more interesting part.
+ //d3 Also makes use of anonymous functions in many many cases which is something I realized only after taking CS245!
+    var svgContainer = d3.select("body").append("svg")
+        .attr("width", 250)
+        .attr("height", 200);
+
  //The point of this is to solve the problem of giving a user-defined word which contains a user-defined word which contains a user-defined word which contains a user-defined word etc., etc.,
  function processUserDefined(string, stack, terminal){ //Used with TASK 6
     var value = userDefined[string];
@@ -187,52 +186,71 @@ function renderStack(stack) {
             else if (thing in userDefined){
                 processUserDefined(thing);
             }
+            else if (thing == "circle"){
+        var TheRadius = stack.pop();
+        var yCoordinate = stack.pop();
+        var xCoordinate= stack.pop();
+        var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
+        var randomIndex = Math.floor((Math.random() * colors.length) + 1);
+
+        color = d3.scaleOrdinal(d3.schemeCategory20);
+
+        var circle = svgContainer.append("circle")
+            .attr("cx", 20+xCoordinate)
+            .attr("cy", 40+yCoordinate)
+            .attr("r", TheRadius)
+            .style("fill", colors[randomIndex]);
+            //.style("fill", function(d, i){return color(i);});
+    }
+    else if (thing == "rectangle"){
+        var height = stack.pop();
+        var width = stack.pop();
+        var yCoordinate = stack.pop();
+        var xCoordinate = stack.pop();
+        var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
+        var randomIndex = Math.floor((Math.random() * colors.length) + 1);
+
+        var rectangle = svgContainer.append("rect")
+            .attr("x", xCoordinate)
+            .attr("y", yCoordinate)
+            .attr("width", width)
+            .attr("height", height)
+            .style("fill", colors[randomIndex]);
+    }
     })
  }
-
- //d3 Here... I decided to use d3 for the final part of this lab because it allows me to easily create SVG elements with many characteristics. Hooking it all up to the forth interpreter is the more interesting part.
-       var svgContainer = d3.select("body").append("svg")
-                                    .attr("width", 250)
-                                    .attr("height", 200);
            
-
 function process(stack, input, terminal) {
     var listOfThingsToDo= input.trim().split(/ +/); //Each word of an input becomes an element of array listOfThingsToDo
-    //var listOfThingsToDo = listOfThingsToDoPlusSemiColon.slice(0, listOfThingsToDoPlusSemiColon.length-1)
-    console.log("the list of things to do is: "+listOfThingsToDo);
     if(listOfThingsToDo.indexOf(":") == -1){ //If we aren't in function-definition mode:
     listOfThingsToDo.forEach(function(element){ //TASK 5:
+
         // The user typed a number
-   // if (!(isNaN(Number(element)))) {
     if (!(isNaN(parseInt(element)))){
         print(terminal,"pushing " + Number(element));
         stack.push(Number(element));
          console.log("stack size should be: "+stack.length);
-    
+    }
+
     // The user types .s
-    } else if (element === ".s") {
+     else if (element === ".s") {
        // print(terminal, " <" + stack.length + "> " + stack.join(" "));
             print(terminal, " <" + stack.stack_repr.length + "> "+stack.stack_repr.slice().join(" "))
         console.log("<"+stack.length+">");
     } 
+
     // The user types a "standard" FORTH operation: dup, nip, >, etc.
     else if (element in words){
-       // if (stack.length > 1 || element == "dup"){
-          if (stack.stack_repr.length > 1 || element == "dup"){
-        console.log("start");
-        var the_op = words[element];
-        eval(the_op)(stack); //Generally, eval is "evil". However, since I am providing parameters for eval within my function (must be in my map) this doesn't pose a security risk (i think???). https://javascriptweblog.wordpress.com/2010/04/19/how-evil-is-eval/ backs me up. Also, frankly, it works!
-    }
+        if (stack.stack_repr.length > 1 || element == "dup"){
+            var the_op = words[element];
+            eval(the_op)(stack); //Generally, eval is "evil". However, since I am providing parameters for eval within my function (must be in my map) this doesn't pose a risk,  since I never eval something not in this map. https://javascriptweblog.wordpress.com/2010/04/19/how-evil-is-eval/ backs me up. Also, frankly, it works!
+        }
         else{
             print(terminal, "ERROR: need more numbers on stack to perform this operation!");
         }
-        //fn.apply(null, stack);
-        
-        console.log("end");
-        //eval(words[input])(stack);
-        //stack = words[input](stack);
     }
 
+    //The user types in a user-defined function
     else if (element in userDefined){ //TASK 6
         var value = userDefined[element];
         var sublist = value.trim().split(/ +/);
@@ -252,18 +270,51 @@ function process(stack, input, terminal) {
                     print(terminal, "ERROR: need more numbers on stack to perform this operation");
                 }
             }
+        else if (thing == "circle"){
+            var TheRadius = stack.pop();
+            var yCoordinate = stack.pop();
+            var xCoordinate= stack.pop();
+            var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
+            var randomIndex = Math.floor((Math.random() * colors.length) + 1);
+
+            color = d3.scaleOrdinal(d3.schemeCategory20);
+
+            var circle = svgContainer.append("circle")
+                .attr("cx", 20+xCoordinate)
+                .attr("cy", 40+yCoordinate)
+                .attr("r", TheRadius)
+                .style("fill", colors[randomIndex]);
+               // .style("fill", function(d, i){return color(i);});
+        }
+        else if (thing == "rectangle"){
+            var height = stack.pop();
+            var width = stack.pop();
+            var yCoordinate = stack.pop();
+            var xCoordinate = stack.pop();
+            var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
+            var randomIndex = Math.floor((Math.random() * colors.length) + 1);
+
+            var rectangle = svgContainer.append("rect")
+                .attr("x", xCoordinate)
+                .attr("y", yCoordinate)
+                .attr("width", width)
+                .attr("height", height)
+                .style("fill", colors[randomIndex]);
+        }
+
+            //After a first go (above) I realize I should have a separate function which goes through userDefined functions which might contain userDefined functions which might contain userDefined functions etc. 
             else if (thing in userDefined){
                 processUserDefined(thing, stack, terminal);
             }
+        })} // end of if in user defined
 
-        })}
-        //I looked at //www.dashingd3js.com/using-the-svg-coordinate-space to understand the way d3 arranges SVG axes. 
-        else if (element == "circle"){
+    //I looked at //www.dashingd3js.com/using-the-svg-coordinate-space to understand the way d3 arranges SVG axes. 
+    else if (element == "circle"){
         var TheRadius = stack.pop();
         var yCoordinate = stack.pop();
         var xCoordinate= stack.pop();
         var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
-      //  var randomIndex = Math.floor((Math.random() * colors.length) + 1);
+        var randomIndex = Math.floor((Math.random() * colors.length) + 1);
 
         color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -271,11 +322,10 @@ function process(stack, input, terminal) {
             .attr("cx", 20+xCoordinate)
             .attr("cy", 40+yCoordinate)
             .attr("r", TheRadius)
-            //.style("fill", colors[randomIndex]);
-            .style("fill", function(d, i){return color(i);});
-    
+            .style("fill", colors[randomIndex]);
+            //.style("fill", function(d, i){return color(i);});
     }
-    else if (element = "rectangle"){
+    else if (element == "rectangle"){
         var height = stack.pop();
         var width = stack.pop();
         var yCoordinate = stack.pop();
@@ -291,9 +341,6 @@ function process(stack, input, terminal) {
             .style("fill", colors[randomIndex]);
     }
 
-    else if (element = "animate"){
-
-    }
 
        
     }) //End of NON definition mode (3)
@@ -319,8 +366,6 @@ function process(stack, input, terminal) {
     else {
         print(terminal, ":-( Unrecognized input");
         }
-    //renderStack(stack);
-   // stack.isChange();
 }; //close of Process function
 
 
@@ -332,7 +377,6 @@ function runRepl(terminal, stack) {
     });
 };
 
-// var stack = []; 
 // Whenever the page is finished loading, call this function. 
 // See: https://learn.jquery.com/using-jquery-core/document-ready/
 $(document).ready(function() {
@@ -340,7 +384,6 @@ $(document).ready(function() {
     var terminal = new Terminal();
     terminal.setHeight("400px");
     terminal.blinkingCursor(true);
-    
     // Find the "terminal" object and change it to add the HTML that
     // represents the terminal to the end of it.
     $("#terminal").append(terminal.html);
@@ -357,14 +400,10 @@ $(document).ready(function() {
 
     print(terminal, "Welcome to HaverForth! v0.1");
     print(terminal, "As you type, the stack (on the right) will be kept in sync");
-    runRepl(terminal, stack); ///
-
-   
+    runRepl(terminal, stack); ///   
 });
 
-//My Constructor:
 
-//var Stack = class Stack {
 class Stack{
     constructor(){
         this.stack_repr =  [];
@@ -400,9 +439,9 @@ class ObservableStack extends Stack{
         
     }
     notify(){
-        //On keyup, 
-        this.observers.push(renderStack);
-        callEachObs(this); //do this function in here
+        //Registers the observer upon notification, then executes them all.
+        this.registerObserver(renderStack);
+        callEachObs(this);
     }
     push(x){
         this.stack_repr.push(x);
@@ -413,7 +452,6 @@ class ObservableStack extends Stack{
         this.notify();
     }
     }
-
 
  var test = new ObservableStack();
  //window.addEventListener("keydown", )
