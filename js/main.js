@@ -193,10 +193,12 @@ function renderStack(stack) {
 
  }
 
- //d3 Here...
+ //d3 Here... I decided to use d3 for the final part of this lab because it allows me to easily create SVG elements with many characteristics. Hooking it all up to the forth interpreter is the more interesting part.
        var svgContainer = d3.select("body").append("svg")
                                     .attr("width", 250)
                                     .attr("height", 200);
+           
+
 function process(stack, input, terminal) {
     var listOfThingsToDo= input.trim().split(/ +/); //Each word of an input becomes an element of array listOfThingsToDo
     //var listOfThingsToDo = listOfThingsToDoPlusSemiColon.slice(0, listOfThingsToDoPlusSemiColon.length-1)
@@ -258,24 +260,49 @@ function process(stack, input, terminal) {
             }
 
         })}
+        //I looked at //www.dashingd3js.com/using-the-svg-coordinate-space to understand the way d3 arranges SVG axes. 
         else if (element == "circle"){
+        var TheRadius = stack.pop();
+        var yCoordinate = stack.pop();
+        var xCoordinate= stack.pop();
+        var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
+      //  var randomIndex = Math.floor((Math.random() * colors.length) + 1);
 
-        var TheRadius = stack.stack_repr.pop();
-        var yCoordinate = stack.stack_repr.pop();
-        var xCoordinate= stack.stack_repr.pop();
+        color = d3.scaleOrdinal(d3.schemeCategory20);
+
+
+        var circle = svgContainer.append("circle")
+            .attr("cx", 20+xCoordinate)
+            .attr("cy", 40+yCoordinate)
+            .attr("r", TheRadius)
+            //.style("fill", colors[randomIndex]);
+            .style("fill", function(d, i){return color(i);});
+    
+    }
+    else if (element = "rectangle"){
+        var height = stack.pop();
+        var width = stack.pop();
+        var yCoordinate = stack.pop();
+        var xCoordinate = stack.pop();
         var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
         var randomIndex = Math.floor((Math.random() * colors.length) + 1);
 
-        var circle = svgContainer.append("circle")
-                          .attr("cx", 20+xCoordinate)
-                          .attr("cy", 40+yCoordinate)
-                          .attr("r", TheRadius)
-                          .style("fill", colors[randomIndex]);
-        
-        console.log("shoulddraw!");
+        var rectangle = svgContainer.append("rect")
+            .attr("x", xCoordinate)
+            .attr("y", yCoordinate)
+            .attr("width", width)
+            .attr("height", height)
+            .style("fill", colors[randomIndex]);
     }
+
+    else if (element = "animate"){
+
+    }
+
        
     }) //End of NON definition mode
+   // }
+  //  }
    // }
 }
         else if (!(listOfThingsToDo.indexOf(":") == -1)){
@@ -413,7 +440,7 @@ class ObservableStack extends Stack{
         this.notify();
     }
     pop(){
-        this.stack_repr.pop();
+        return this.stack_repr.pop();
         this.notify();
     }
     }
