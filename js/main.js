@@ -1,5 +1,4 @@
-// See the following on using objects as key/value dictionaries
-// https://stackoverflow.com/questions/1208222/how-to-do-associative-array-hashing-in-javascript
+
 //TASK 4:
 var words = {
     //Here, I set myself up for using an eval. I suppose I should implement closures instead...
@@ -169,7 +168,6 @@ function renderStack(stack) {
  * @param {string} input - The string the user typed
  * @param {Terminal} terminal - The terminal object
  */
-
  //The point of this is to solve the problem of giving a user-defined word which contains a user-defined word which contains a user-defined word which contains a user-defined word etc., etc.,
  function processUserDefined(string, stack, terminal){ //Used with TASK 6
     var value = userDefined[string];
@@ -190,7 +188,6 @@ function renderStack(stack) {
                 processUserDefined(thing);
             }
     })
-
  }
 
  //d3 Here... I decided to use d3 for the final part of this lab because it allows me to easily create SVG elements with many characteristics. Hooking it all up to the forth interpreter is the more interesting part.
@@ -270,7 +267,6 @@ function process(stack, input, terminal) {
 
         color = d3.scaleOrdinal(d3.schemeCategory20);
 
-
         var circle = svgContainer.append("circle")
             .attr("cx", 20+xCoordinate)
             .attr("cy", 40+yCoordinate)
@@ -300,12 +296,9 @@ function process(stack, input, terminal) {
     }
 
        
-    }) //End of NON definition mode
-   // }
-  //  }
-   // }
+    }) //End of NON definition mode (3)
 }
-        else if (!(listOfThingsToDo.indexOf(":") == -1)){
+    else if (!(listOfThingsToDo.indexOf(":") == -1)){
         // then, until you hit semicolon, put in function body
         var indexOfColon = listOfThingsToDo.indexOf(":");
         var indexOfSemi = listOfThingsToDo.indexOf(";");
@@ -323,27 +316,13 @@ function process(stack, input, terminal) {
 
         }
 
-        else {
+    else {
         print(terminal, ":-( Unrecognized input");
         }
     //renderStack(stack);
    // stack.isChange();
 }; //close of Process function
 
-function draw(a, b, radius) {
-        var canvas = document.getElementById('tutorial');
-        var ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        var x = a; //25 + j * 50; // x coordinate
-        var y = b; // 25 + i * 50; // y coordinate
-      //  var radius = 20; // Arc radius
-        var startAngle = 0; // Starting point on circle
-        var endAngle = 2*Math.PI; // End point on circle
-      //  var anticlockwise = i % 2 !== 0; // clockwise or anticlockwise
-        ctx.arc(x, y, radius, startAngle, endAngle);//, anticlockwise);
-        ctx.fill();
-        console.log('drawn');
-    }
 
 function runRepl(terminal, stack) {
     terminal.input("Type a forth command:", function(line) {
@@ -370,15 +349,11 @@ $(document).ready(function() {
     //var stack = new Stack; //hereee we goooooooooooo
     var stack = new ObservableStack;
 
-
     //TASK 2:
     $("#reset").click(function(){
         emptyStack(stack);
         console.log("just emptied");
     });
-  //  $(':button').click(function(){console.log("i tried");})//process(stack, this.name, terminal)})
-
-
 
     print(terminal, "Welcome to HaverForth! v0.1");
     print(terminal, "As you type, the stack (on the right) will be kept in sync");
@@ -406,15 +381,9 @@ class Stack{
 
     }
 }
-
-//Subject:
-//Observer:
-//ConcreteSubject:
-//ConcreteObserver
 function callEachObs(stack){
     stack.observers.forEach(function(obs){
         obs(stack);
-        
     })
 }
 
@@ -434,7 +403,7 @@ class ObservableStack extends Stack{
         //On keyup, 
         this.observers.push(renderStack);
         callEachObs(this); //do this function in here
-        }
+    }
     push(x){
         this.stack_repr.push(x);
         this.notify();
@@ -450,6 +419,4 @@ class ObservableStack extends Stack{
  //window.addEventListener("keydown", )
 //test.registerObserver(isChange);
 //test.notify;
-
-
 //console.log("observers are: " + test.observers);
