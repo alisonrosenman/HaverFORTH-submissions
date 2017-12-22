@@ -1,7 +1,7 @@
 
 //TASK 4:
 var words = {
-    //Here, I set myself up for using an eval. I suppose I should implement closures instead...
+    //Here, I set myself up for using an eval. See discussion in comments by eval use and in my final project reflections (email)
     "+":"addition", 
     "-":"subtraction",
     "*":"multiplication",
@@ -44,13 +44,14 @@ var userDefined = {};
 
  //TASK 1:
 function emptyStack(astack) {
-    console.log(astack.length);
+    console.log(astack.stack_repr.length);
     while (astack.stack_repr.length > 0){
         astack.pop();
     }
 }
 
 //TASK 3:
+//!
 //For these functions, I use stack.stack_repr.pop() to get variables to +*-/ because I don't want to renderStack just yet.
 //BUt once I'm able to calculate the thing I want on the stack, I use a stack.push() which will then render the completed stack.
 function addition(stack){
@@ -162,7 +163,7 @@ function renderStack(stack) {
 
 
  //d3 Here... I decided to use d3 for the final part of this lab because it allows me to easily create SVG elements with many characteristics. Hooking it all up to the forth interpreter is the more interesting part.
- //d3 Also makes use of anonymous functions in many many cases which is something I realized only after taking CS245!
+ //d3 Also makes use of anonymous functions in many many cases which is something I realized only after taking CS245! I initially imagined using some with d3's ordinal scale when I make cirles/rectangles (for fill colors) but ultimately reasoned against it due to the fact that the shape events are within a mapping function and so iteration over the scale woudln't happen. Anyways...
     var svgContainer = d3.select("body").append("svg")
         .attr("width", 250)
         .attr("height", 200);
@@ -187,36 +188,36 @@ function renderStack(stack) {
                 processUserDefined(thing);
             }
             else if (thing == "circle"){
-        var TheRadius = stack.pop();
-        var yCoordinate = stack.pop();
-        var xCoordinate= stack.pop();
-        var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
-        var randomIndex = Math.floor((Math.random() * colors.length) + 1);
+                var TheRadius = stack.stack_repr.pop();
+                var yCoordinate = stack.stack_repr.pop();
+                var xCoordinate= stack.stack_repr.pop();
+                var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
+                var randomIndex = Math.floor((Math.random() * colors.length) + 1);
 
-        color = d3.scaleOrdinal(d3.schemeCategory20);
+                color = d3.scaleOrdinal(d3.schemeCategory20);
 
-        var circle = svgContainer.append("circle")
-            .attr("cx", 20+xCoordinate)
-            .attr("cy", 40+yCoordinate)
-            .attr("r", TheRadius)
-            .style("fill", colors[randomIndex]);
-            //.style("fill", function(d, i){return color(i);});
-    }
-    else if (thing == "rectangle"){
-        var height = stack.pop();
-        var width = stack.pop();
-        var yCoordinate = stack.pop();
-        var xCoordinate = stack.pop();
-        var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
-        var randomIndex = Math.floor((Math.random() * colors.length) + 1);
+                var circle = svgContainer.append("circle")
+                    .attr("cx", 20+xCoordinate)
+                    .attr("cy", 40+yCoordinate)
+                    .attr("r", TheRadius)
+                    .style("fill", colors[randomIndex]);
+                    //.style("fill", function(d, i){return color(i);});
+             }
+            else if (thing == "rectangle"){
+                var height = stack.stack_repr.pop();
+                var width = stack.stack_repr.pop();
+                var yCoordinate = stack.stack_repr.pop();
+                var xCoordinate = stack.stack_repr.pop();
+                var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
+                var randomIndex = Math.floor((Math.random() * colors.length) + 1);
 
-        var rectangle = svgContainer.append("rect")
-            .attr("x", xCoordinate)
-            .attr("y", yCoordinate)
-            .attr("width", width)
-            .attr("height", height)
-            .style("fill", colors[randomIndex]);
-    }
+                var rectangle = svgContainer.append("rect")
+                    .attr("x", xCoordinate)
+                    .attr("y", yCoordinate)
+                    .attr("width", width)
+                    .attr("height", height)
+                    .style("fill", colors[randomIndex]);
+             }
     })
  }
            
@@ -236,7 +237,7 @@ function process(stack, input, terminal) {
      else if (element === ".s") {
        // print(terminal, " <" + stack.length + "> " + stack.join(" "));
             print(terminal, " <" + stack.stack_repr.length + "> "+stack.stack_repr.slice().join(" "))
-        console.log("<"+stack.length+">");
+      //  console.log("<"+stack.length+">");
     } 
 
     // The user types a "standard" FORTH operation: dup, nip, >, etc.
@@ -271,9 +272,9 @@ function process(stack, input, terminal) {
                 }
             }
         else if (thing == "circle"){
-            var TheRadius = stack.pop();
-            var yCoordinate = stack.pop();
-            var xCoordinate= stack.pop();
+            var TheRadius = stack.stack_repr.pop();
+            var yCoordinate = stack.stack_repr.pop();
+            var xCoordinate= stack.stack_repr.pop();
             var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
             var randomIndex = Math.floor((Math.random() * colors.length) + 1);
 
@@ -287,10 +288,10 @@ function process(stack, input, terminal) {
                // .style("fill", function(d, i){return color(i);});
         }
         else if (thing == "rectangle"){
-            var height = stack.pop();
-            var width = stack.pop();
-            var yCoordinate = stack.pop();
-            var xCoordinate = stack.pop();
+            var height = stack.stack_repr.pop();
+            var width = stack.stack_repr.pop();
+            var yCoordinate = stack.stack_repr.pop();
+            var xCoordinate = stack.stack_repr.pop();
             var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
             var randomIndex = Math.floor((Math.random() * colors.length) + 1);
 
@@ -310,9 +311,9 @@ function process(stack, input, terminal) {
 
     //I looked at //www.dashingd3js.com/using-the-svg-coordinate-space to understand the way d3 arranges SVG axes. 
     else if (element == "circle"){
-        var TheRadius = stack.pop();
-        var yCoordinate = stack.pop();
-        var xCoordinate= stack.pop();
+        var TheRadius = stack.stack_repr.pop();
+        var yCoordinate = stack.stack_repr.pop();
+        var xCoordinate= stack.stack_repr.pop();
         var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
         var randomIndex = Math.floor((Math.random() * colors.length) + 1);
 
@@ -326,10 +327,10 @@ function process(stack, input, terminal) {
             //.style("fill", function(d, i){return color(i);});
     }
     else if (element == "rectangle"){
-        var height = stack.pop();
-        var width = stack.pop();
-        var yCoordinate = stack.pop();
-        var xCoordinate = stack.pop();
+        var height = stack.stack_repr.pop();
+        var width = stack.stack_repr.pop();
+        var yCoordinate = stack.stack_repr.pop();
+        var xCoordinate = stack.stack_repr.pop();
         var colors = ["green", "purple", "red", "pink", "blue", "yellow"];
         var randomIndex = Math.floor((Math.random() * colors.length) + 1);
 
@@ -448,7 +449,7 @@ class ObservableStack extends Stack{
         this.notify();
     }
     pop(){
-        return this.stack_repr.pop();
+        this.stack_repr.pop();
         this.notify();
     }
     }
